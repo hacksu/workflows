@@ -1,5 +1,14 @@
 name: "Publish Package"
 description: "Uploads a package to the NPM and GitHub Packages Registry"
+inputs:
+  NPM_TOKEN:
+    description: "NPM Registry Token"
+    default: "false"
+    required: false
+  GITHUB_TOKEN:
+    description: "GitHub Registry Token"
+    default: "false"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -7,21 +16,28 @@ runs:
       uses: actions/checkout@v2
 
     - name: Setup NPM Registry
+      if: ${{ inputs.NPM_TOKEN != 'false' }}
       uses: actions/setup-node@v2
       with:
         registry-url: 'https://registry.npmjs.org'
     - name: Install Dependencies
+      shell: bash
       run: npm install
     - name: Publish to NPM
+      if: ${{ inputs.NPM_TOKEN != 'false' }}
+      shell: bash
       run: npm publish --access public
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ inputs.NPM_TOKEN }}
 
     - name: Setup Github Registry
+      if: ${{ inputs.NPM_TOKEN != 'false' }}
       uses: actions/setup-node@v2
       with:
         registry-url: 'https://npm.pkg.github.com'
     - name: Publish to GitHub Packages
+      if: ${{ inputs.NPM_TOKEN != 'false' }}
+      shell: bash
       run: npm publish --access public
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ inputs.GITHUB_TOKEN }}
