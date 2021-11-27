@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: |
         pkgName=$(cat package.json | jq -r ".name");
-        publishedVersion=$(curl "https://registry.npmjs.org/${pkgName}/latest" | jq -r ".version");
+        publishedVersion=$(curl "https://registry.npmjs.org/${pkgName}/latest" | jq -r ".version" && echo || echo "0.0.0");
         currentVersion=$(cat package.json | jq -r ".version");
         echo "Package: $pkgName";
         echo "Published: $publishedVersion";
